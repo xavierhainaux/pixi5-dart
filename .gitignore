@@ -1,9 +1,10 @@
-# Files and directories created by pub
-.packages
-.pub/
-build/
-# Remove the following pattern if you wish to check in your lock file
-pubspec.lock
 
-# Directory created by dartdoc
+pubspec.lock
 doc/api/
+
+_*
+.*
+!.gitignore
+desktop.ini
+[tT]humbs.db
+build/

@@ -13,3 +13,10 @@ linter:
     - test_types_in_equals
     - unrelated_type_equality_checks
     - valid_regexps
+    - always_specify_types
+    - always_declare_return_types
+    - unnecessary_this
+    - annotate_overrides
+    - avoid_annotating_with_dynamic
+    - avoid_returning_this
+    - avoid_return_types_on_setters
