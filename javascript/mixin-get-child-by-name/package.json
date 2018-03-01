@@ -1,0 +1,33 @@
+{
+  "name": "@pixi/mixin-get-child-by-name",
+  "version": "5.0.0-alpha",
+  "main": "lib/mixin-get-child-by-name.js",
+  "module": "lib/mixin-get-child-by-name.es.js",
+  "description": "Support for legacy browser JavaScript environments",
+  "author": "Mat Groves",
+  "contributors": [
+    "Matt Karl <matt@mattkarl.com>"
+  ],
+  "homepage": "http://pixijs.com/",
+  "bugs": "https://github.com/pixijs/pixi.js/issues",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/pixijs/pixi.js.git"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "test": "floss --path test"
+  },
+  "files": [
+    "lib"
+  ],
+  "dependencies": {
+    "@pixi/display": "^5.0.0-alpha"
+  },
+  "devDependencies": {
+    "floss": "^2.1.3"
+  }
+}

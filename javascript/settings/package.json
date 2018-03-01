@@ -1,0 +1,33 @@
+{
+  "name": "@pixi/settings",
+  "version": "5.0.0-alpha",
+  "main": "lib/settings.js",
+  "module": "lib/settings.es.js",
+  "description": "PixiJS Application",
+  "author": "Mat Groves",
+  "contributors": [
+    "Matt Karl <matt@mattkarl.com>"
+  ],
+  "homepage": "http://pixijs.com/",
+  "bugs": "https://github.com/pixijs/pixi.js/issues",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/pixijs/pixi.js.git"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "test": "floss --path test"
+  },
+  "files": [
+    "lib"
+  ],
+  "dependencies": {
+    "ismobilejs": "^0.4.0"
+  },
+  "devDependencies": {
+    "floss": "^2.1.3"
+  }
+}

@@ -1,0 +1,42 @@
+{
+  "name": "@pixi/core",
+  "version": "5.0.0-alpha",
+  "main": "lib/core.js",
+  "module": "lib/core.es.js",
+  "description": "Core PixiJS",
+  "author": "Mat Groves",
+  "contributors": [
+    "Matt Karl <matt@mattkarl.com>"
+  ],
+  "homepage": "http://pixijs.com/",
+  "bugs": "https://github.com/pixijs/pixi.js/issues",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/pixijs/pixi.js.git"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "test": "floss --path test"
+  },
+  "files": [
+    "lib"
+  ],
+  "dependencies": {
+    "bit-twiddle": "^1.0.2",
+    "eventemitter3": "^2.0.0",
+    "ismobilejs": "^0.4.0",
+    "mini-runner": "^1.0.1",
+    "@pixi/math": "^5.0.0-alpha",
+    "@pixi/constants": "^5.0.0-alpha",
+    "@pixi/settings": "^5.0.0-alpha",
+    "@pixi/utils": "^5.0.0-alpha",
+    "@pixi/ticker": "^5.0.0-alpha",
+    "@pixi/display": "^5.0.0-alpha"
+  },
+  "devDependencies": {
+    "floss": "^2.1.3"
+  }
+}

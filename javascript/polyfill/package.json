@@ -1,0 +1,31 @@
+{
+  "name": "@pixi/polyfill",
+  "version": "5.0.0-alpha",
+  "main": "lib/polyfill.js",
+  "module": "lib/polyfill.es.js",
+  "description": "Support for legacy browser JavaScript environments",
+  "author": "Mat Groves",
+  "contributors": [
+    "Matt Karl <matt@mattkarl.com>"
+  ],
+  "homepage": "http://pixijs.com/",
+  "bugs": "https://github.com/pixijs/pixi.js/issues",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/pixijs/pixi.js.git"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "lib"
+  ],
+  "dependencies": {
+    "es6-promise-polyfill": "^1.2.0",
+    "object-assign": "^4.0.1"
+  },
+  "devDependencies": {
+    "floss": "^2.1.3"
+  }
+}
