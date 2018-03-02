@@ -1,5 +1,7 @@
 import 'dart:typed_data';
 
+import 'package:pixi/src/math/transform.dart';
+
 import 'point.dart';
 import 'dart:math' as math;
 
@@ -15,7 +17,7 @@ import 'dart:math' as math;
  */
 class Matrix
 {
-  double _a, _b, _c, _d, _tx, _ty;
+  num a, b, c, d, tx, ty;
 
   /**
    * @param {number} [a=1] - x scale
@@ -25,7 +27,7 @@ class Matrix
    * @param {number} [tx=0] - x translation
    * @param {number} [ty=0] - y translation
    */
-  Matrix([this._a = 1.0, this._b = 0.0, this._c = 0.0, this._d = 1.0, this._tx = 0.0, this._ty = 0.0]);
+  Matrix([this.a = 1.0, this.b = 0.0, this.c = 0.0, this.d = 1.0, this.tx = 0.0, this.ty = 0.0]);
 
   /**
    * Creates a Matrix object based on the given array. The Element to Matrix mapping order is as follows:
@@ -39,7 +41,7 @@ class Matrix
    *
    * @param {number[]} array - The array that the matrix will be populated from.
    */
-  factory Matrix.fromArray(List<double> array)
+  factory Matrix.fromArray(List<num> array)
   {
     return new Matrix(array[0],array[1],array[3],array[4],array[2],array[5]);
   }
@@ -57,12 +59,12 @@ class Matrix
    */
   void set(num a, num b, num c, num d, num tx, num ty)
   {
-    _a = a;
-    _b = b;
-    _c = c;
-    _d = d;
-    _tx = tx;
-    _ty = ty;
+    a = a;
+    b = b;
+    c = c;
+    d = d;
+    tx = tx;
+    ty = ty;
   }
 
   /**
@@ -72,30 +74,30 @@ class Matrix
    * @param {Float32Array} [out=new Float32Array(9)] - If provided the array will be assigned to out
    * @return {number[]} the newly created array which contains the matrix
    */
-  List<double> toArray({bool transpose: false, Float32List result})
+  Float32List toArray({bool transpose: false, Float32List result})
   {
     result ??= new Float32List(9);
 
     if (transpose)
     {
-      result[0] = _a;
-      result[1] = _b;
+      result[0] = a.toDouble();
+      result[1] = b.toDouble();
       result[2] = 0.0;
-      result[3] = _c;
-      result[4] = _d;
+      result[3] = c.toDouble();
+      result[4] = d.toDouble();
       result[5] = 0.0;
-      result[6] = _tx;
-      result[7] = _ty;
+      result[6] = tx.toDouble();
+      result[7] = ty.toDouble();
       result[8] = 1.0;
     }
     else
     {
-      result[0] = _a;
-      result[1] = _c;
-      result[2] = _tx;
-      result[3] = _b;
-      result[4] = _d;
-      result[5] = _ty;
+      result[0] = a.toDouble();
+      result[1] = c.toDouble();
+      result[2] = tx.toDouble();
+      result[3] = b.toDouble();
+      result[4] = d.toDouble();
+      result[5] = ty.toDouble();
       result[6] = 0.0;
       result[7] = 0.0;
       result[8] = 1.0;
@@ -103,13 +105,6 @@ class Matrix
 
     return result;
   }
-
-  double get a => _a;
-  double get b => _b;
-  double get c => _c;
-  double get d => _d;
-  double get tx => _tx;
-  double get ty => _ty;
 
   /**
    * Get a new position with the current transformation applied.
@@ -123,9 +118,9 @@ class Matrix
   {
     result ??= new Point();
 
-    final double x = pos.x.toDouble();
-    final double y = pos.y.toDouble();
-    result.set((_a * x) + (_c * y) + _tx, (_b * x) + (_d * y) + _ty);
+    final num x = pos.x;
+    final num y = pos.y;
+    result.set((a * x) + (c * y) + tx, (b * x) + (d * y) + ty);
 
     return result;
   }
@@ -142,13 +137,13 @@ class Matrix
   {
     result ??= new Point();
 
-    final double id = 1.0 / ((_a * _d) + (_c * -_b));
+    final num id = 1.0 / ((a * d) + (c * -b));
 
-    final double x = pos.x.toDouble();
-    final double y = pos.y.toDouble();
+    final num x = pos.x;
+    final num y = pos.y;
 
-    result.set((_d * id * x) + (-_c * id * y) + (((_ty * _c) - (_tx * _d)) * id),
-    (_a * id * y) + (-_b * id * x) + (((-_ty * _a) + (_tx * _b)) * id));
+    result.set((d * id * x) + (-c * id * y) + (((ty * c) - (tx * d)) * id),
+    (a * id * y) + (-b * id * x) + (((-ty * a) + (tx * b)) * id));
 
     return result;
   }
@@ -162,8 +157,8 @@ class Matrix
    */
   void translate(num x, num y)
   {
-    _tx += x;
-    _ty += y;
+    tx += x;
+    ty += y;
   }
 
   /**
@@ -175,12 +170,12 @@ class Matrix
    */
   void scale(num x, num y)
   {
-    _a *= x;
-    _d *= y;
-    _c *= x;
-    _b *= y;
-    _tx *= x;
-    _ty *= y;
+    a *= x;
+    d *= y;
+    c *= x;
+    b *= y;
+    tx *= x;
+    ty *= y;
   }
 
   /**
@@ -194,16 +189,16 @@ class Matrix
     num cos = math.cos(angle);
     num sin = math.sin(angle);
 
-    final double a1 = _a;
-    final double c1 = _c;
-    final double tx1 = _tx;
+    final num a1 = a;
+    final num c1 = c;
+    final num tx1 = tx;
 
-    _a = (a1 * cos) - (_b * sin);
-    _b = (a1 * sin) + (_b * cos);
-    _c = (c1 * cos) - (_d * sin);
-    _d = (c1 * sin) + (_d * cos);
-    _tx = (tx1 * cos) - (_ty * sin);
-    _ty = (tx1 * sin) + (_ty * cos);
+    a = (a1 * cos) - (b * sin);
+    b = (a1 * sin) + (b * cos);
+    c = (c1 * cos) - (d * sin);
+    d = (c1 * sin) + (d * cos);
+    tx = (tx1 * cos) - (ty * sin);
+    ty = (tx1 * sin) + (ty * cos);
   }
 
   /**
@@ -214,18 +209,18 @@ class Matrix
    */
   void append(Matrix matrix)
   {
-    final double a1 = _a;
-    final double b1 = _b;
-    final double c1 = _c;
-    final double d1 = _d;
+    final num a1 = a;
+    final num b1 = b;
+    final num c1 = c;
+    final num d1 = d;
 
-    _a = (matrix.a * a1) + (matrix.b * c1);
-    _b = (matrix.a * b1) + (matrix.b * d1);
-    _c = (matrix.c * a1) + (matrix.d * c1);
-    _d = (matrix.c * b1) + (matrix.d * d1);
+    a = (matrix.a * a1) + (matrix.b * c1);
+    b = (matrix.a * b1) + (matrix.b * d1);
+    c = (matrix.c * a1) + (matrix.d * c1);
+    d = (matrix.c * b1) + (matrix.d * d1);
 
-    _tx = (matrix.tx * a1) + (matrix.ty * c1) + _tx;
-    _ty = (matrix.tx * b1) + (matrix.ty * d1) + _ty;
+    tx = (matrix.tx * a1) + (matrix.ty * c1) + tx;
+    ty = (matrix.tx * b1) + (matrix.ty * d1) + ty;
   }
 
   /**
@@ -242,15 +237,15 @@ class Matrix
    * @param {number} skewY - Skew on the y axis
    * @return {PIXI.Matrix} This matrix. Good for chaining method calls.
    */
-  void setTransform(double x, double y, double pivotX, double pivotY, double scaleX, double scaleY, double rotation, double skewX, double skewY)
+  void setTransform(num x, num y, num pivotX, num pivotY, num scaleX, num scaleY, num rotation, num skewX, num skewY)
   {
-    _a = math.cos(rotation + skewY) * scaleX;
-    _b = math.sin(rotation + skewY) * scaleX;
-    _c = -math.sin(rotation - skewX) * scaleY;
-    _d = math.cos(rotation - skewX) * scaleY;
+    a = math.cos(rotation + skewY) * scaleX;
+    b = math.sin(rotation + skewY) * scaleX;
+    c = -math.sin(rotation - skewX) * scaleY;
+    d = math.cos(rotation - skewX) * scaleY;
 
-    _tx = x - ((pivotX * _a) + (pivotY * _c));
-    _ty = y - ((pivotX * _b) + (pivotY * _d));
+    tx = x - ((pivotX * a) + (pivotY * c));
+    ty = y - ((pivotX * b) + (pivotY * d));
   }
 
   /**
@@ -259,23 +254,23 @@ class Matrix
    * @param {PIXI.Matrix} matrix - The matrix to prepend
    * @return {PIXI.Matrix} This matrix. Good for chaining method calls.
    */
-  prepend(matrix)
+  void prepend(Matrix matrix)
   {
-    const tx1 = this.tx;
+    final num tx1 = tx;
 
-    if (matrix.a !== 1 || matrix.b !== 0 || matrix.c !== 0 || matrix.d !== 1)
+    if (matrix.a != 1 || matrix.b != 0 || matrix.c != 0 || matrix.d != 1)
     {
-      const a1 = this.a;
-      const c1 = this.c;
+      final num a1 = a;
+      final num c1 = c;
 
-      this.a = (a1 * matrix.a) + (this.b * matrix.c);
-      this.b = (a1 * matrix.b) + (this.b * matrix.d);
-      this.c = (c1 * matrix.a) + (this.d * matrix.c);
-      this.d = (c1 * matrix.b) + (this.d * matrix.d);
+      a = (a1 * matrix.a) + (b * matrix.c);
+      b = (a1 * matrix.b) + (b * matrix.d);
+      c = (c1 * matrix.a) + (d * matrix.c);
+      d = (c1 * matrix.b) + (d * matrix.d);
     }
 
-    this.tx = (tx1 * matrix.a) + (this.ty * matrix.c) + matrix.tx;
-    this.ty = (tx1 * matrix.b) + (this.ty * matrix.d) + matrix.ty;
+    tx = (tx1 * matrix.a) + (ty * matrix.c) + matrix.tx;
+    ty = (tx1 * matrix.b) + (ty * matrix.d) + matrix.ty;
   }
 
   /**
@@ -284,26 +279,21 @@ class Matrix
    * @param {PIXI.Transform} transform - The transform to apply the properties to.
    * @return {PIXI.Transform} The transform with the newly applied properties
    */
-  decompose(transform)
+  void decompose(Transform transform)
   {
     // sort out rotation / skew..
-    const a = this.a;
-    const b = this.b;
-    const c = this.c;
-    const d = this.d;
+    final num skewX = -math.atan2(-c, d);
+    final num skewY = math.atan2(b, a);
 
-    const skewX = -Math.atan2(-c, d);
-    const skewY = Math.atan2(b, a);
+    final num delta = (skewX + skewY).abs();
 
-    const delta = Math.abs(skewX + skewY);
-
-    if (delta < 0.00001 || Math.abs(PI_2 - delta) < 0.00001)
+    if (delta < 0.00001 || (math.PI * 2 - delta).abs() < 0.00001)
     {
       transform.rotation = skewY;
 
       if (a < 0 && d >= 0)
       {
-        transform.rotation += (transform.rotation <= 0) ? Math.PI : -Math.PI;
+        transform.rotation += (transform.rotation <= 0) ? math.PI : -math.PI;
       }
 
       transform.skew.x = transform.skew.y = 0;
@@ -316,12 +306,12 @@ class Matrix
     }
 
     // next set scale
-    transform.scale.x = Math.sqrt((a * a) + (b * b));
-    transform.scale.y = Math.sqrt((c * c) + (d * d));
+    transform.scale.x = math.sqrt((a * a) + (b * b));
+    transform.scale.y = math.sqrt((c * c) + (d * d));
 
     // next set position
-    transform.position.x = this.tx;
-    transform.position.y = this.ty;
+    transform.position.x = tx;
+    transform.position.y = ty;
 
     return transform;
   }
@@ -329,42 +319,36 @@ class Matrix
   /**
    * Inverts this matrix
    *
-   * @return {PIXI.Matrix} This matrix. Good for chaining method calls.
    */
-  invert()
+  void invert()
   {
-    const a1 = this.a;
-    const b1 = this.b;
-    const c1 = this.c;
-    const d1 = this.d;
-    const tx1 = this.tx;
-    const n = (a1 * d1) - (b1 * c1);
+    final num a1 = a;
+    final num b1 = b;
+    final num c1 = c;
+    final num d1 = d;
+    final num tx1 = tx;
+    final num n = (a1 * d1) - (b1 * c1);
 
-    this.a = d1 / n;
-    this.b = -b1 / n;
-    this.c = -c1 / n;
-    this.d = a1 / n;
-    this.tx = ((c1 * this.ty) - (d1 * tx1)) / n;
-    this.ty = -((a1 * this.ty) - (b1 * tx1)) / n;
-
-    return this;
+    a = d1 / n;
+    b = -b1 / n;
+    c = -c1 / n;
+    d = a1 / n;
+    tx = ((c1 * ty) - (d1 * tx1)) / n;
+    ty = -((a1 * ty) - (b1 * tx1)) / n;
   }
 
   /**
    * Resets this Matix to an identity (default) matrix.
    *
-   * @return {PIXI.Matrix} This matrix. Good for chaining method calls.
    */
-  identity()
+  void setToIdentity()
   {
-    this.a = 1;
-    this.b = 0;
-    this.c = 0;
-    this.d = 1;
-    this.tx = 0;
-    this.ty = 0;
-
-    return this;
+    a = 1;
+    b = 0;
+    c = 0;
+    d = 1;
+    tx = 0;
+    ty = 0;
   }
 
   /**
@@ -372,36 +356,24 @@ class Matrix
    *
    * @return {PIXI.Matrix} A copy of this matrix. Good for chaining method calls.
    */
-  clone()
+  Matrix clone()
   {
-    const matrix = new Matrix();
-
-    matrix.a = this.a;
-    matrix.b = this.b;
-    matrix.c = this.c;
-    matrix.d = this.d;
-    matrix.tx = this.tx;
-    matrix.ty = this.ty;
-
-    return matrix;
+    return new Matrix(a, b, c, d, tx, ty);
   }
 
   /**
    * Changes the values of the given matrix to be the same as the ones in this matrix
    *
    * @param {PIXI.Matrix} matrix - The matrix to copy to.
-   * @return {PIXI.Matrix} The matrix given in parameter with its values updated.
    */
-  copyTo(matrix)
+  void copyTo(Matrix matrix)
   {
-    matrix.a = this.a;
-    matrix.b = this.b;
-    matrix.c = this.c;
-    matrix.d = this.d;
-    matrix.tx = this.tx;
-    matrix.ty = this.ty;
-
-    return matrix;
+    matrix.a = a;
+    matrix.b = b;
+    matrix.c = c;
+    matrix.d = d;
+    matrix.tx = tx;
+    matrix.ty = ty;
   }
 
   /**
@@ -410,16 +382,9 @@ class Matrix
    * @param {PIXI.Matrix} matrix - The matrix to copy from.
    * @return {PIXI.Matrix} this
    */
-  copyFrom(matrix)
+  void copyFrom(Matrix matrix)
   {
-    this.a = matrix.a;
-    this.b = matrix.b;
-    this.c = matrix.c;
-    this.d = matrix.d;
-    this.tx = matrix.tx;
-    this.ty = matrix.ty;
-
-    return this;
+    matrix.copyTo(this);
   }
 
   /**
@@ -428,10 +393,7 @@ class Matrix
    * @static
    * @const
    */
-  static get IDENTITY()
-  {
-    return new Matrix();
-  }
+  static final Matrix identity = new Matrix();
 
   /**
    * A temp matrix
@@ -439,8 +401,5 @@ class Matrix
    * @static
    * @const
    */
-  static get TEMP_MATRIX()
-  {
-    return new Matrix();
-  }
+  static final Matrix tempMatrix = new Matrix();
 }
